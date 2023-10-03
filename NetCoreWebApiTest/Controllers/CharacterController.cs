@@ -23,5 +23,15 @@ namespace NetCoreWebApiTest.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost]
+        [Route("AddCharacter")]
+        public IActionResult AddCharacter(AddCharacterRequest request)
+        {
+            List<AddCharacterResponse> result = _characterServices.AddCharacter(request);
+
+            return Ok(result);
+        }
+
     }
 }

@@ -1,10 +1,14 @@
-﻿using NetCoreWebApiTest.Model;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using NetCoreWebApiTest.Model;
 
 namespace NetCoreWebApiTest.DOTs
 {
     public class GetCharacterResponse
     {
-        public int Id { get; set; }
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
         public string Name { get; set; }
         public int HitPoints { get; set; }
         public int Strength { get; set; }
