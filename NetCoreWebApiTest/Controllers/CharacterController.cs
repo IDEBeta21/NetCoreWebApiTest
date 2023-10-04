@@ -42,5 +42,13 @@ namespace NetCoreWebApiTest.Controllers
             return Ok(result);
         }
 
+        [HttpDelete]
+        [Route("DeleteCharacter")]
+        public IActionResult DeleteCharacter(DeleteCharacterByIdRequest request)
+        {
+            List<DeleteCharacterByIdResponse> result = _characterServices.DeleteCharacterById(request);
+
+            return Ok(result);
+        }
     }
 }

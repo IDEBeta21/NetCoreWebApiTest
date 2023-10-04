@@ -105,5 +105,42 @@ namespace NetCoreWebApiTest.Services
 
             return response;
         }
+
+        public List<DeleteCharacterByIdResponse> DeleteCharacterById(DeleteCharacterByIdRequest request)
+        {
+            var client = new MongoClient(_conString);
+            var db = client.GetDatabase(_dbName);
+            var DeleteCharacterCollection = db.GetCollection<DeleteCharacterByIdResponse>(_characterCollectionName);
+
+            var objectIdToFind = new ObjectId(request.Id);
+            var filter = Builders<DeleteCharacterByIdResponse>.Filter.Eq("_id", objectIdToFind);
+
+            //Delete a Character
+            DeleteCharacterCollection.DeleteOne(filter);
+
+            //Return Character
+            var GetCharacterCollection = db.GetCollection<DeleteCharacterByIdResponse>(_characterCollectionName);
+            var results = GetCharacterCollection.Find(_ => true);
+            List<DeleteCharacterByIdResponse> response = new List<DeleteCharacterByIdResponse>();
+
+            //for debugging
+            var resList = results.ToList();
+
+            foreach (var result in resList)
+            {
+                response.Add(new DeleteCharacterByIdResponse()
+                {
+                    Id = result.Id.ToString(),
+                    Name = result.Name,
+                    HitPoints = result.HitPoints,
+                    Strength = result.Strength,
+                    Defense = result.Defense,
+                    Intelligence = result.Intelligence,
+                    Class = result.Class
+                }); ;
+            }
+
+            return response;
+        }
     }
 }
