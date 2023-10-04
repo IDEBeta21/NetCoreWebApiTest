@@ -16,10 +16,19 @@ namespace NetCoreWebApiTest.Controllers
         }
 
         [HttpGet]
-        [Route("GetAllCharactes")]
+        [Route("GetAllCharacters")]
         public IActionResult GetAllCharacters()
         {
             List<GetCharacterResponse> result = _characterServices.GetAllCharacters();
+
+            return Ok(result);
+        }
+
+        [HttpPost]
+        [Route("GetSingleCharacterById")]
+        public IActionResult GetSingleCharacter(GetSingleCharacterRequest request)
+        {
+            GetSingleCharacterResponse result = _characterServices.GetSingleCharacterById(request);
 
             return Ok(result);
         }

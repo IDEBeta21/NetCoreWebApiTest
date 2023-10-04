@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using NetCoreWebApiTest.DOTs;
 
@@ -28,7 +29,10 @@ namespace NetCoreWebApiTest.Services
             //throw new NotImplementedException();
             List<GetCharacterResponse> response = new List<GetCharacterResponse>();
 
-            foreach( var result in results.ToList())
+            //for debugging
+            var resList = results.ToList();
+
+            foreach( var result in resList)
             {
                 response.Add(new GetCharacterResponse()
                 {
@@ -57,7 +61,11 @@ namespace NetCoreWebApiTest.Services
             var GetCharacterCollection = db.GetCollection<AddCharacterResponse>(_characterCollectionName);
             var results = GetCharacterCollection.Find(_ => true);
             List<AddCharacterResponse> response = new List<AddCharacterResponse>();
-            foreach (var result in results.ToList())
+
+            //for debugging
+            var resList = results.ToList();
+
+            foreach (var result in resList)
             {
                 response.Add(new AddCharacterResponse()
                 {
@@ -74,6 +82,28 @@ namespace NetCoreWebApiTest.Services
             return response;
         }
 
+        public GetSingleCharacterResponse GetSingleCharacterById(GetSingleCharacterRequest request)
+        {
+            var response = new GetSingleCharacterResponse();
 
+            var client = new MongoClient(_conString);
+            var db = client.GetDatabase(_dbName);
+            var collection = db.GetCollection<GetSingleCharacterResponse>(_characterCollectionName);
+
+            var objectIdToFind = new ObjectId(request.Id);
+            var filter = Builders<GetSingleCharacterResponse>.Filter.Eq("_id", objectIdToFind);
+
+            var result = collection.Find(filter).SingleOrDefault();
+
+            response.Id = result.Id;
+            response.Name = result.Name;
+            response.HitPoints = result.HitPoints;
+            response.Strength = result.Strength;
+            response.Defense = result.Defense;
+            response.Intelligence = result.Intelligence;
+            response.Class = result.Class;
+
+            return response;
+        }
     }
 }
