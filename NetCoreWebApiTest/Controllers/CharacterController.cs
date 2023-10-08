@@ -50,5 +50,15 @@ namespace NetCoreWebApiTest.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet]
+        [Route("GetAllCharacterName")]
+        public IActionResult GetAllCharacterName()
+        {
+            List<GetAllCharacterNameResponse> result = _characterServices.GetAllCharacterName();
+
+            return Ok(result);
+        }
+
     }
 }

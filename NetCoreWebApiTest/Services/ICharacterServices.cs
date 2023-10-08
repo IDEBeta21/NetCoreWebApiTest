@@ -9,5 +9,6 @@ namespace NetCoreWebApiTest.Services
         List<AddCharacterResponse> AddCharacter(AddCharacterRequest request);
         GetSingleCharacterResponse GetSingleCharacterById(GetSingleCharacterRequest request);
         List<DeleteCharacterByIdResponse> DeleteCharacterById(DeleteCharacterByIdRequest request);
+        List<GetAllCharacterNameResponse> GetAllCharacterName();
     }
 }
