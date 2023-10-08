@@ -8,23 +8,16 @@ namespace NetCoreWebApiTest.Services
 {
     public class CharacterServices : ICharacterServices
     {
-        private readonly string? _conString;
-        private readonly string? _dbName;
-        private readonly string? _characterCollectionName;
         private IMongoDatabase _db;
         public CharacterServices(IConfiguration configuration)
         {
-            this._conString = "mongodb://localhost:27017";
-            this._dbName = "dotnet-rpg";
-            this._characterCollectionName = "characters";
-
             var client = new MongoClient(configuration.GetConnectionString("DbConnection"));
             this._db = client.GetDatabase(configuration.GetConnectionString("CharacterDb"));
         }
 
         public List<GetCharacterResponse> GetAllCharacters()
         {
-            var collection = _db.GetCollection<GetCharacterResponse>(_characterCollectionName);
+            var collection = _db.GetCollection<GetCharacterResponse>("characters");
 
             var results = collection.Find(_ => true);
 
@@ -52,13 +45,13 @@ namespace NetCoreWebApiTest.Services
         }
         public List<AddCharacterResponse> AddCharacter(AddCharacterRequest request)
         {
-            var AddCharacterCollection = _db.GetCollection<AddCharacterRequest>(_characterCollectionName);
+            var AddCharacterCollection = _db.GetCollection<AddCharacterRequest>("characters");
 
             //Add new Character
             AddCharacterCollection.InsertOne(request);
 
             //Return Character
-            var GetCharacterCollection = _db.GetCollection<AddCharacterResponse>(_characterCollectionName);
+            var GetCharacterCollection = _db.GetCollection<AddCharacterResponse>("characters");
             var results = GetCharacterCollection.Find(_ => true);
             List<AddCharacterResponse> response = new List<AddCharacterResponse>();
 
@@ -86,7 +79,7 @@ namespace NetCoreWebApiTest.Services
         {
             var response = new GetSingleCharacterResponse();
 
-            var collection = _db.GetCollection<GetSingleCharacterResponse>(_characterCollectionName);
+            var collection = _db.GetCollection<GetSingleCharacterResponse>("characters");
 
             var objectIdToFind = new ObjectId(request.Id);
             var filter = Builders<GetSingleCharacterResponse>.Filter.Eq("_id", objectIdToFind);
@@ -106,7 +99,7 @@ namespace NetCoreWebApiTest.Services
 
         public List<DeleteCharacterByIdResponse> DeleteCharacterById(DeleteCharacterByIdRequest request)
         {
-            var DeleteCharacterCollection = _db.GetCollection<DeleteCharacterByIdResponse>(_characterCollectionName);
+            var DeleteCharacterCollection = _db.GetCollection<DeleteCharacterByIdResponse>("characters");
 
             var objectIdToFind = new ObjectId(request.Id);
             var filter = Builders<DeleteCharacterByIdResponse>.Filter.Eq("_id", objectIdToFind);
@@ -115,7 +108,7 @@ namespace NetCoreWebApiTest.Services
             DeleteCharacterCollection.DeleteOne(filter);
 
             //Return Character
-            var GetCharacterCollection = _db.GetCollection<DeleteCharacterByIdResponse>(_characterCollectionName);
+            var GetCharacterCollection = _db.GetCollection<DeleteCharacterByIdResponse>("characters");
             var results = GetCharacterCollection.Find(_ => true);
             List<DeleteCharacterByIdResponse> response = new List<DeleteCharacterByIdResponse>();
 
@@ -141,7 +134,7 @@ namespace NetCoreWebApiTest.Services
 
         public List<GetAllCharacterNameResponse> GetAllCharacterName()
         {
-            var collection = _db.GetCollection<GetAllCharacterNameResponse>(_characterCollectionName);
+            var collection = _db.GetCollection<GetAllCharacterNameResponse>("characters");
 
             var results = collection.Find(_ => true).Project(x => new {x.Id, x.Name});
 
